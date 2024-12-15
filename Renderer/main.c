@@ -93,14 +93,11 @@ void paint_color_buffer(uint32_t color) {
 }
 
 void draw_grid(void) {
-	for (int y_axis = 0; y_axis < window_height; y_axis += 10) {
-		for (int x_axis = 0; x_axis < window_width; x_axis++) {
-			color_buffer[(window_width * y_axis) + x_axis] = 0xFFFFFFFF;
-		}
-	}
 	for (int y_axis = 0; y_axis < window_height; y_axis++) {
-		for (int x_axis = 0; x_axis < window_width; x_axis += 10) {
-			color_buffer[(window_width * y_axis) + x_axis] = 0xFFFFFFFF;
+		for (int x_axis = 0; x_axis < window_width; x_axis++) {
+			if (x_axis % 10 == 0 || y_axis % 10 == 0) {
+				color_buffer[(window_width * y_axis) + x_axis] = 0xFFFFFFFF;
+			}
 		}
 	}
 }
