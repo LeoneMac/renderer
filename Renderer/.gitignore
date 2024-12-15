@@ -1,0 +1,4 @@
+*.vs
+.vs/
+Renderer/x64/*
+Debug/
