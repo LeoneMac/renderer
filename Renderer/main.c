@@ -1,13 +1,9 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <SDL.h>
 #include "display.h"
 
 bool is_running = false;
 
 void setup(void) {
-	color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
+	color_buffer = (uint32_t*)malloc(sizeof(uint32_t) * window_width * window_height);
 	if (!color_buffer) {
 		is_running = false;
 	}
@@ -25,15 +21,15 @@ void process_input(void) {
 	SDL_PollEvent(&event);
 
 	switch (event.type) {
-		case SDL_QUIT:
+	case SDL_QUIT:
+		is_running = false;
+		break;
+	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_ESCAPE)
 			is_running = false;
-			break;
-		case SDL_KEYDOWN:
-			if (event.key.keysym.sym == SDLK_ESCAPE)
-				is_running = false;
-			break;
-		default:
-			break;
+		break;
+	default:
+		break;
 	}
 }
 
@@ -44,8 +40,9 @@ void update(void) {
 void render(void) {
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	SDL_RenderClear(renderer);
-	
-	draw_rect(100, 100, 500, 300, 0xFF5500FF);
+	draw_grid();
+	draw_rect(100, 100, 200, 200, 0xFF5500FF);
+	draw_pixel(500, 500, 0xFFCC0000);
 	render_color_buffer();
 	paint_color_buffer(0x00000000);
 
@@ -53,7 +50,7 @@ void render(void) {
 }
 
 int main(void) {
-	
+
 	is_running = initialize_window();
 
 	setup();

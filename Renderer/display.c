@@ -51,11 +51,9 @@ void paint_color_buffer(uint32_t color) {
 }
 
 void draw_grid(void) {
-	for (int y_axis = 0; y_axis < window_height; y_axis++) {
-		for (int x_axis = 0; x_axis < window_width; x_axis++) {
-			if (x_axis % 10 == 0 || y_axis % 10 == 0) {
-				color_buffer[(window_width * y_axis) + x_axis] = 0xFFFFFFFF;
-			}
+	for (int y_axis = 0; y_axis < window_height; y_axis += 10) {
+		for (int x_axis = 0; x_axis < window_width; x_axis += 10) {
+			color_buffer[(window_width * y_axis) + x_axis] = 0xFFFFFFFF;
 		}
 	}
 }
@@ -76,6 +74,15 @@ void render_color_buffer() {
 		(int)(window_width * sizeof(uint32_t))
 	);
 	SDL_RenderCopy(renderer, color_buffer_texture, NULL, NULL);
+}
+
+void draw_pixel(int x_pos, int y_pos, uint32_t pixel_color) {
+	if (x_pos < window_width && y_pos < window_height) {
+		color_buffer[(window_width * y_pos) + x_pos] = pixel_color;
+	}
+	else {
+		fprintf(stderr, "Not valid position informed for draw_pixel!\n");
+	}
 }
 
 void destroy_window(void) {
