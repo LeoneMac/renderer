@@ -1,4 +1,11 @@
 #include "display.h"
+#include "vector.h"
+#define N_POINTS (9 * 9 * 9)
+
+vec3_t cube_points[N_POINTS]; // 9*9*9 cube
+vec2_t projected_points[N_POINTS];
+
+float fov_factor = 128;
 
 bool is_running = false;
 
@@ -14,6 +21,17 @@ void setup(void) {
 		window_width,
 		window_height
 	);
+
+	int point_count = 0;
+
+	for (float x = -1; x <= 1; x += 0.25) {
+		for (float y = -1; y <= 1; y += 0.25) {
+			for (float z = -1; z <= 1; z += 0.25) {
+				vec3_t new_point = { .x_pos = x, .y_pos = y, .z_pos = z };
+				cube_points[point_count++] = new_point;
+			}
+		}
+	}
 }
 
 void process_input(void) {
@@ -33,16 +51,38 @@ void process_input(void) {
 	}
 }
 
+vec2_t project(vec3_t point) {
+	vec2_t projected_point = {
+		.x_pos = (fov_factor * point.x_pos),
+		.y_pos = (fov_factor * point.y_pos)
+	};
+
+	return projected_point;
+}
+
 void update(void) {
-	// TODO:
+	for (int i = 0; i < N_POINTS; i++) {
+		vec3_t point = cube_points[i];
+
+		vec2_t projected_point = project(point);
+
+		projected_points[i] = projected_point;
+	}
 }
 
 void render(void) {
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	SDL_RenderClear(renderer);
 	draw_grid();
-	draw_rect(100, 100, 200, 200, 0xFF5500FF);
-	draw_pixel(500, 500, 0xFFCC0000);
+	
+	for (int i = 0; i < N_POINTS; i++) {
+		vec2_t projected_point = projected_points[i];
+		draw_rect(
+			projected_point.x_pos + (window_width / 2), 
+			projected_point.y_pos + (window_height / 2),
+			4,
+			4,
+			0xFFFF0066);
+	}
+	
 	render_color_buffer();
 	paint_color_buffer(0x00000000);
 
